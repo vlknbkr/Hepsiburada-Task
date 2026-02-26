@@ -1,0 +1,27 @@
+{
+  "name": "hepsiburada-task",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vlknbkr/Hepsiburada-Task.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/vlknbkr/Hepsiburada-Task/issues"
+  },
+  "homepage": "https://github.com/vlknbkr/Hepsiburada-Task#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.3.1",
+    "dotenv": "^17.3.1"
+  },
+  "dependencies": {
+    "typescript": "^5.9.3"
+  }
+}
