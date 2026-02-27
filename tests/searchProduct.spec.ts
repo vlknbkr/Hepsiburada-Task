@@ -9,16 +9,14 @@ test.describe('Scenario 1 - Product Search and Review', () => {
 
         const homePage = new HomePage(page);
         await homePage.open();
-        await homePage.waitForPageLoad();
 
         await homePage.search('iphone');
 
         const searchResultsPage = new SearchResultsPage(page);
         await searchResultsPage.waitForPageLoad();
 
-        const { productInfo, newPage } = await searchResultsPage.clickRandomProduct();
+        const { productInfo } = await searchResultsPage.clickRandomProduct();
         console.log(`Selected product: ${productInfo.title} | Price: ${productInfo.finalPrice}`);
 
-        
     });
 });
