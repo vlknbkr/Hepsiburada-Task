@@ -15,8 +15,9 @@ test.describe('Scenario 1 - Product Search and Review', () => {
         const searchResultsPage = new SearchResultsPage(page);
         await searchResultsPage.waitForPageLoad();
 
-        const { productInfo } = await searchResultsPage.clickRandomProduct();
-        console.log(`Selected product: ${productInfo.title} | Price: ${productInfo.finalPrice}`);
+        const { productInfo, newPage} = await searchResultsPage.clickRandomProduct();
+        console.log(`Selected product: ${productInfo.title} | Price: ${productInfo.finalPrice} | href: ${productInfo.href}`);
 
+        const productDetailsPage = new ProductDetailPage(newPage)
     });
 });

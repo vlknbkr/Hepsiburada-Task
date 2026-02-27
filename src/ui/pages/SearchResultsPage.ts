@@ -27,10 +27,23 @@ export class SearchResultsPage extends BasePage {
 
     async clickRandomProduct(): Promise<{ productInfo: ProductInfo, newPage: Page }> {
         const count = await this.productCardsRoot.count();
+        console.log(`\n🔍 [DEBUG] Total products found on page: ${count}`);
+
+        // Log all product titles for visibility
+        console.log('📋 [DEBUG] Product list:');
+        for (let i = 0; i < count; i++) {
+            const card = new ProductCard(this.page, this.productCardsRoot.nth(i), i);
+            const info = await card.getInfo();
+            console.log(`  [${i}] ${info.title} | ${info.finalPrice}`);
+        }
+
         const randomIndex = Math.floor(Math.random() * count);
+        console.log(`\n🎯 [DEBUG] Randomly selected index: ${randomIndex} / ${count - 1}`);
 
         const card = new ProductCard(this.page, this.productCardsRoot.nth(randomIndex), randomIndex);
         const productInfo = await card.getInfo();
+        console.log(`✅ [DEBUG] Selected product: "${productInfo.title}" | Price: ${productInfo.finalPrice} | Href: ${productInfo.href}`);
+
         const newPage = await card.click();
 
         return { productInfo, newPage };
