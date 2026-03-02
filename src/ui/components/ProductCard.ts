@@ -1,4 +1,4 @@
-import { Locator, Page, expect } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import type { ProductInfo } from "../types/ProductInfo";
 import { parseTRY } from "../utils/ParsePrice";
 
@@ -20,7 +20,7 @@ export class ProductCard {
 
 
     async getInfo(): Promise<ProductInfo> {
-        await expect(this.productLink).toBeVisible();
+        await this.productLink.waitFor({ state: 'visible' });
         const title = (await this.titleLink.innerText()).trim();
         const href = await this.productLink.getAttribute("href");
         const finalPrice = (await this.finalPrice.innerText()).trim();

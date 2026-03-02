@@ -1,6 +1,5 @@
-import { test as base, expect, Page } from '@playwright/test'
+import { test as base, expect } from '@playwright/test'
 import { HomePage } from "../pages/HomePage"
-import { ProductDetailPage } from "../pages/ProductDetailPage";
 import { SearchResultsPage } from "../pages/SearchResultsPage";
 
 type UIFixtures = {

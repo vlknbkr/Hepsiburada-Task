@@ -6,7 +6,7 @@ export class BasePage {
     async waitForPageLoad() {
         await this.page.waitForLoadState('domcontentloaded');
     }
-    
+
     async acceptCookieConsent(locator: Locator) {
         try {
             await locator.waitFor({ state: 'visible', timeout: 4000 });

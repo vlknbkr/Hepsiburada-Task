@@ -37,7 +37,6 @@ export class HomePage extends BasePage {
                 await this.searchInput.waitFor({ state: 'visible', timeout: 3000 });
                 break; 
             } catch {
-                console.log(`[DEBUG] searchInput not visible after click (attempt ${attempt}/${maxRetries})`);
                 if (attempt === maxRetries) {
                     throw new Error('Search input did not become visible after ' + maxRetries + ' attempts');
                 }
