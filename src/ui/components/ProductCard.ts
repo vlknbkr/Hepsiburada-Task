@@ -4,19 +4,15 @@ import { parseTRY } from "../utils/ParsePrice";
 
 export class ProductCard {
 
-    private readonly productLink: Locator;
-    private readonly titleLink: Locator;
-    private readonly finalPrice: Locator;
-
     constructor(
         private readonly page: Page,
         public readonly root: Locator,
         public readonly index: number
-    ) {
-        this.productLink = this.root.locator('a[href*="-p-"]').first();
-        this.titleLink = this.root.locator('h2 a').first();
-        this.finalPrice = this.root.locator('[data-test-id^="final-price-"]').first();
-    }
+    ) { }
+
+    get productLink() { return this.root.locator('a[href*="-p-"]').first(); }
+    get titleLink() { return this.root.locator('h2 a').first(); }
+    get finalPrice() { return this.root.locator('[data-test-id^="final-price-"]').first(); }
 
 
     async getInfo(): Promise<ProductInfo> {

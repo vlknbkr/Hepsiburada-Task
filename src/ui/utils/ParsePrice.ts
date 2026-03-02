@@ -1,8 +1,11 @@
 export function parseTRY(price: string): number {
-    return Number(
-        price
-            .replace(/\./g, '')
-            .replace(',', '.')
-            .replace(/[^\d.]/g, '')
-    );
+    const match = price.match(/(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d+)?/);
+    if (match) {
+        return Number(
+            match[0]
+                .replace(/\./g, '')
+                .replace(',', '.')
+        );
+    }
+    return 0;
 }
