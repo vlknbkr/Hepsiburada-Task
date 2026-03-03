@@ -1,6 +1,6 @@
-import { test, expect } from '../src/ui/fixtures/Fixtures';
-import { ProductDetailPage } from '../src/ui/pages/ProductDetailPage';
-import { ReviewSortOption } from '../src/ui/types/ReviewSortOption';
+import { test, expect } from '../../src/ui/fixtures/Fixtures';
+import { ProductDetailPage } from '../../src/ui/pages/ProductDetailPage';
+import { ReviewSortOption } from '../../src/ui/types/ReviewSortOption';
 
 test.describe('Senaryo 1 - Ürün Arama ve Değerlendirme', () => {
 

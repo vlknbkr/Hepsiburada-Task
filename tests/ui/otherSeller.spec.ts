@@ -1,5 +1,5 @@
-import { test, expect } from '../src/ui/fixtures/Fixtures';
-import { ProductDetailPage } from '../src/ui/pages/ProductDetailPage';
+import { test, expect } from '../../src/ui/fixtures/Fixtures';
+import { ProductDetailPage } from '../../src/ui/pages/ProductDetailPage';
 
 test.describe('Senaryo 2 - Diğer Satıcıları Bul', () => {
 
