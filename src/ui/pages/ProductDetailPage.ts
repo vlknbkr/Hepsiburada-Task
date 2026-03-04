@@ -87,15 +87,14 @@ export class ProductDetailPage extends BasePage {
             await this.page.waitForTimeout(2000);
 
             await expect.poll(async () => {
-                const isSelected = await this.reviewsTabBtn.getAttribute('aria-selected');
 
                 await this.reviewsTabBtn.click({ force: true });
                 try {
                     await this.reviewsPanel.waitFor({ state: 'visible', timeout: 2000 });
-                    return true; 
+                    return true;
                 } catch (e) {
                     console.log(`${DEBUG} goToReviews → Panel henüz yüklenmedi, tekrar denenecek...`);
-                    return false; 
+                    return false;
                 }
             }, {
                 message: 'Değerlendirme tabı 10 saniye içinde aktifleşmedi.',
@@ -153,16 +152,31 @@ export class ProductDetailPage extends BasePage {
     }
 
     async clickReviewThumb(index: number, type: 'up' | 'down'): Promise<Locator> {
-
         const card = this.reviewCardsWithThumbs.nth(index);
+        console.log("review card index " + card);
         const selector = type === 'up' ? '.thumbsUp' : '.thumbsDown';
         const btn = card.locator(selector);
+        
+        await btn.waitFor({state: 'visible'});
+        await btn.scrollIntoViewIfNeeded();
+
+
+        await btn.scrollIntoViewIfNeeded();
+        await btn.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {
+            console.log(`${DEBUG} clickReviewThumb → Element visible olmadı, yine de deneyeceğiz.`);
+        });
 
         await expect.poll(async () => {
-            await btn.click({ force: true });
+    
+            try {
+                await btn.click({ force: true, timeout: 2000 });
+            } catch (e) {
+                await btn.dispatchEvent('click');
+            }
+
             return await card.getByText('Teşekkür Ederiz.').isVisible();
         }, {
-            message: 'Oy verme işlemi başarısız oldu',
+            message: 'Oy verme işlemi başarısız oldu (Teşekkür mesajı görülmedi)',
             intervals: [1000, 2000],
             timeout: 10000
         }).toBe(true);

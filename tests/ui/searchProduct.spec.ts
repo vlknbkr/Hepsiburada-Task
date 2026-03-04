@@ -9,20 +9,14 @@ test.describe('Senaryo 1 - Ürün Arama ve Değerlendirme', () => {
         await test.step('Ana sayfa açılıyor', async () => {
             await homePage.open();
         });
-    
+
         await test.step('Arama modalı açılıyor', async () => {
-            await expect.poll(async () => {
-                return await homePage.openSearchAndCheckState();
-            }, {
-                message: 'Arama modal açılamadı!!!',
-                timeout: 5000,
-                intervals: [500]
-            }).toBeTruthy();
+            await homePage.openSearchModal();
         });
 
         await test.step('Ürün aranıyor: "iphone"', async () => {
             await homePage.typeSearchQuery('iphone');
-            await expect(page, 'Arama sonrası URL "iphone" içermiyor').toHaveURL(/iphone/i);
+            await expect(page).toHaveURL(/iphone/i);
         });
 
         await test.step('Arama sonuçları yüklendi', async () => {

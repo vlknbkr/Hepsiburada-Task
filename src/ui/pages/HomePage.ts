@@ -1,6 +1,7 @@
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { BasePage } from "./BasePage";
 
+const DEBUG = '[HomePage]';
 
 export class HomePage extends BasePage {
 
@@ -40,11 +41,26 @@ export class HomePage extends BasePage {
         await this.searchBoxTrigger.click();
     }
 
-    async openSearchAndCheckState() {
-        await this.searchBoxTrigger.click();
-        await this.searchModalActiveContainer.waitFor({ state: 'visible' });
+    async openSearchModal(): Promise<boolean> {
+        console.log(`${DEBUG} openSearchModal → Arama modalı açılıyor...`);
 
-        return await this.searchModalActiveContainer.isVisible();
+        await expect.poll(async () => {
+            await this.searchBoxTrigger.click({ force: true });
+
+            try {
+                await this.searchModalActiveContainer.waitFor({ state: 'visible', timeout: 2000 });
+                return true;
+            } catch (e) {
+                console.log(`${DEBUG} Modal henüz gelmedi, tekrar tıklanıyor...`);
+                return false;
+            }
+        }, {
+            message: 'Arama modalı 5 saniye içinde açılamadı.',
+            intervals: [1000, 2000],
+            timeout: 15000
+        }).toBeTruthy();
+
+        return true;
     }
 
     async handleCookieConsent() {

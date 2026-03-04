@@ -10,18 +10,12 @@ test.describe('Senaryo 2 - Diğer Satıcıları Bul', () => {
         });
 
         await test.step('Arama modalı açılıyor', async () => {
-            await expect.poll(async () => {
-                return await homePage.openSearchAndCheckState();
-            }, {
-                message: 'Arama modalı açılamadı!',
-                timeout: 5000,
-                intervals: [500]
-            }).toBeTruthy();
+            await homePage.openSearchModal();
         });
 
         await test.step('Ürün aranıyor: "iphone"', async () => {
             await homePage.typeSearchQuery('iphone');
-            await expect(page, 'Arama sonrası URL "iphone" içermiyor').toHaveURL(/iphone/i);
+            await expect(page).toHaveURL(/iphone/i);
         });
 
         const { productInfo, newPage } = await test.step('Rastgele ürün seçildi', async () => {

@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test:chrome": "npx playwright test --project=chromium",
+    "test:firefox": "npx playwright test --project=firefox",
+    "test:all": "npx playwright test",
+    "test:debug": "npx playwright test --debug"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vlknbkr/Hepsiburada-Task.git"
@@ -23,6 +28,6 @@
   },
   "dependencies": {
     "typescript": "^5.9.3",
-    "zod":"4.3.6"
+    "zod": "4.3.6"
   }
 }
