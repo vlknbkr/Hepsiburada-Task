@@ -81,39 +81,69 @@ export class ProductDetailPage extends BasePage {
     }
 
     async goToReviews() {
-        await expect.poll(async () => {
-            const isSelected = await this.reviewsTabBtn.getAttribute('aria-selected');
-            if (isSelected === 'true') return true;
+        console.log(`${DEBUG} goToReviews → Değerlendirmeler tabına geçiş deneniyor...`);
 
-            await this.reviewsTabBtn.click();
+        try {
+            await this.page.waitForTimeout(2000);
 
-            return await this.reviewsPanel.isVisible();
-        }, {
-            message: 'Değerlendirme tabı birkaç deneme sonunda açılamadı...',
-            intervals: [1000, 2000],
-            timeout: 10000
-        }).toBeTruthy();
+            await expect.poll(async () => {
+                const isSelected = await this.reviewsTabBtn.getAttribute('aria-selected');
+
+                await this.reviewsTabBtn.click({ force: true });
+                try {
+                    await this.reviewsPanel.waitFor({ state: 'visible', timeout: 2000 });
+                    return true; 
+                } catch (e) {
+                    console.log(`${DEBUG} goToReviews → Panel henüz yüklenmedi, tekrar denenecek...`);
+                    return false; 
+                }
+            }, {
+                message: 'Değerlendirme tabı 10 saniye içinde aktifleşmedi.',
+                intervals: [1000, 2000],
+                timeout: 10000
+            }).toBeTruthy();
+
+            console.log(`${DEBUG} goToReviews → Başarıyla geçiş yapıldı.`);
+            await this.allReviewCards.first().waitFor({ state: 'visible', timeout: 5000 });
+
+        } catch (error) {
+            console.error(`${DEBUG} goToReviews → KRİTİK HATA: Tab değiştirilemedi!`, error);
+            throw new Error(`[ProductDetailPage] Değerlendirmeler tabına geçiş yapılamadı.`);
+        }
     }
 
     async selectSortOption(option: ReviewSortOption) {
-        await this.sortReviewsBtn.click();
-        await this.sortMenu.waitFor({ state: 'visible' });
+        console.log(`${DEBUG} selectSortOption → Başlatılıyor: "${option}"`);
 
         await expect.poll(async () => {
-            if (!(await this.sortMenu.isVisible()) && !(await this.sortReviewsBtn.innerText()).includes(option)) {
-                console.log("1* sort menu açılıyor.")
-                await this.sortReviewsBtn.click();
+            const currentLabel = await this.sortReviewBTtnAfterSort.innerText();
+            const isMenuVisible = await this.sortMenu.isVisible();
+
+            if (!isMenuVisible && !currentLabel.includes(option)) {
+                console.log(`${DEBUG} Menü açılıyor...`);
+                await this.sortReviewsBtn.click({ force: true });
             }
-            await this.sortMenu.getByText(option, { exact: true }).click({ force: true });
 
-            const currentSortLabel = await this.sortReviewBTtnAfterSort.innerText();
+            try {
+                await this.sortMenu.waitFor({ state: 'visible', timeout: 2000 });
 
-            return currentSortLabel.includes(option);
+                await this.sortMenu.getByText(option, { exact: true }).click({ force: true });
+
+                const updatedLabel = await this.sortReviewBTtnAfterSort.innerText();
+                const menuHidden = await this.sortMenu.isHidden();
+
+                return menuHidden && updatedLabel.includes(option);
+            } catch (e) {
+                console.log(`${DEBUG} Menü etkileşimi tamamlanamadı, tekrar deneniyor...`);
+                return false;
+            }
         }, {
-            message: `Sıralama seçeneği "${option}" uygulanamadı.`,
+            message: `Sıralama seçeneği "${option}" 15 saniye içinde uygulanamadı.`,
             intervals: [1000, 2000],
             timeout: 15000
         }).toBeTruthy();
+
+        console.log(`${DEBUG} selectSortOption → "${option}" başarıyla seçildi.`);
     }
 
     async hasReviews(): Promise<boolean> {

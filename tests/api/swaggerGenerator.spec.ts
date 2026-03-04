@@ -14,11 +14,19 @@ test.describe('Swagger Generator API Tests', () => {
             expect(postResponseBody.link).toBeDefined();
         });
 
-        await test.step('GET: Oluşturulan client indirildi', async () => {
+        await test.step('GET: Oluşturulan client indirildi ve doğrulandı', async () => {
             const downloadLink = postResponseBody.link;
-            const getResponse = await swaggerService.downloadGeneratedClient(downloadLink);
-            expect(getResponse).toBeDefined();
-            console.log(getResponse)
+            const response = await swaggerService.downloadGeneratedClient(downloadLink);
+
+            expect(response.status(), 'Download endpoint 200 dönmeli').toBe(200);
+
+            const contentType = response.headers()['content-type'];
+            expect(contentType, 'Content-Type zip veya octet-stream olmalı').toMatch(
+                /application\/(zip|octet-stream)/
+            );
+
+            const body = await response.body();
+            expect(body.byteLength, 'İndirilen dosya boş olmamalı').toBeGreaterThan(0);
         });
     });
 });

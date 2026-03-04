@@ -9,7 +9,7 @@ test.describe('Senaryo 1 - Ürün Arama ve Değerlendirme', () => {
         await test.step('Ana sayfa açılıyor', async () => {
             await homePage.open();
         });
-
+    
         await test.step('Arama modalı açılıyor', async () => {
             await expect.poll(async () => {
                 return await homePage.openSearchAndCheckState();

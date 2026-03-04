@@ -3,7 +3,7 @@ import { APIRequestContext, APIResponse, expect } from '@playwright/test';
 export class HttpClient {
   constructor(private readonly request: APIRequestContext) { }
 
-  async get(path: string): Promise<any> {
+  async get(path: string): Promise<APIResponse> {
     const response = await this.request.get(path);
     await this.assertOk(response, 'GET', path);
     return response;
