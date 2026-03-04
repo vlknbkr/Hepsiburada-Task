@@ -3,6 +3,7 @@ import { ProductDetailPage } from '../../src/ui/pages/ProductDetailPage';
 import { ReviewSortOption } from '../../src/ui/types/ReviewSortOption';
 
 test.describe('Senaryo 1 - Ürün Arama ve Değerlendirme', () => {
+    const searchTerm = 'iphone';
 
     test('Ürün ara, rastgele bir ürün seç, doğrula ve değerlendirmelerle etkileşime gir', async ({ homePage, searchResultsPage, page }) => {
 
@@ -14,9 +15,9 @@ test.describe('Senaryo 1 - Ürün Arama ve Değerlendirme', () => {
             await homePage.openSearchModal();
         });
 
-        await test.step('Ürün aranıyor: "iphone"', async () => {
-            await homePage.typeSearchQuery('iphone');
-            await expect(page).toHaveURL(/iphone/i);
+        await test.step(`Ürün aranıyor: "${searchTerm}"`, async () => {
+            await homePage.typeSearchQuery(searchTerm);
+            await expect(page).toHaveURL(searchTerm);
         });
 
         await test.step('Arama sonuçları yüklendi', async () => {

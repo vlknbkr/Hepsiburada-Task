@@ -2,6 +2,7 @@ import { test, expect } from '../../src/ui/fixtures/Fixtures';
 import { ProductDetailPage } from '../../src/ui/pages/ProductDetailPage';
 
 test.describe('Senaryo 2 - Diğer Satıcıları Bul', () => {
+    const searchTerm = 'iphone';
 
     test('Ürün ara ve en ucuz satıcıya git', async ({ homePage, searchResultsPage, page }) => {
 
@@ -13,9 +14,9 @@ test.describe('Senaryo 2 - Diğer Satıcıları Bul', () => {
             await homePage.openSearchModal();
         });
 
-        await test.step('Ürün aranıyor: "iphone"', async () => {
-            await homePage.typeSearchQuery('iphone');
-            await expect(page).toHaveURL(/iphone/i);
+        await test.step(`Ürün aranıyor: "${searchTerm}"`, async () => {
+            await homePage.typeSearchQuery(searchTerm);
+            await expect(page).toHaveURL(searchTerm);
         });
 
         const { productInfo, newPage } = await test.step('Rastgele ürün seçildi', async () => {
