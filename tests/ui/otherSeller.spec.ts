@@ -25,6 +25,7 @@ test.describe('Senaryo 2 - Diğer Satıcıları Bul', () => {
         });
 
         const { productInfo, newPage } = await test.step('Rastgele ürün seçildi', async () => {
+            await searchResultsPage.waitForPageLoad();
             return await searchResultsPage.clickRandomProduct();
         });
 
@@ -40,32 +41,20 @@ test.describe('Senaryo 2 - Diğer Satıcıları Bul', () => {
 
             if (otherSellers.length > 0) {
                 const cheapest = otherSellers.reduce((min, s) =>
-                    s.price < min.price ? s : min);
+                    (s.price ?? Infinity) < (min.price ?? Infinity) ? s : min);
 
-                if (cheapest.price < mainProduct.finalPrice) {
+                if (cheapest.price !== null && mainProduct.finalPrice !== null && cheapest.price < mainProduct.finalPrice) {
                     console.log(`Daha ucuz satıcı bulundu: ${cheapest.merchantName} — ${cheapest.price} TL`);
                     await cheapest.goToProductBtn.click();
                 }
             }
         });
 
-        await test.step('Ürün sepete ekleniyor', async () => {
-            await productDetailsPage.addToCart();
-        });
+        await test.step('Ürünü sepete ekle ve modalı doğrula', async () => {
+            const modalData = await productDetailsPage.addToCart();
 
-        await test.step('Sepete ekleme modalı doğrulanıyor', async () => {
-            await expect.poll(async () => {
-                const data = await productDetailsPage.getAddToCartModalData();
-                return data.isModalVisible;
-            }, {
-                message: 'Sepete ekle modalı zamanında görünmedi',
-                intervals: [500, 1000],
-                timeout: 10000
-            }).toBe(true);
-
-            const modalData = await productDetailsPage.getAddToCartModalData();
-            expect(modalData.successMessage, 'Sepete ekleme başarı mesajı bulunamadı').toContain('Ürün sepetinizde');
-            expect(modalData.productTitle, 'Modal içindeki ürün başlığı boş olmamalı').not.toBe('');
+            expect(modalData.successMessage).toContain('Ürün sepetinizde');
+            expect(modalData.productTitle).not.toBe('');
         });
     });
 });

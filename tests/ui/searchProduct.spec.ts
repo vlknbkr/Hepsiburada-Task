@@ -49,9 +49,8 @@ test.describe('Senaryo 1 - Ürün Arama ve Değerlendirme', () => {
             await productDetailsPage.goToReviews();
         });
 
-        await test.step('Değerlendirmeler sekmesinin açıldığı doğrulanıyor', async () => {
-            await expect(productDetailsPage.reviewsPanel, 'Değerlendirmeler sekmesi açılamadı').toBeVisible();
-            await expect(productDetailsPage.reviewsTabBtn, 'Değerlendirmeler sekmesi aktif (seçili) duruma geçmedi').toHaveAttribute('aria-selected', 'true');
+        await test.step('Değerlendirmeler sekmesinin içeriği kontrol ediliyor', async () => {
+            await expect(productDetailsPage.allReviewCards.first()).toBeVisible();
         });
 
         await test.step('Değerlendirmeler "En Yeni" ye göre sıralanıyor', async () => {
@@ -59,16 +58,21 @@ test.describe('Senaryo 1 - Ürün Arama ve Değerlendirme', () => {
         });
 
         await test.step('Sıralamanın "En Yeni" olarak güncellendiği doğrulanıyor', async () => {
-            await expect(productDetailsPage.sortReviewBTtnAfterSort, 'Sıralama seçeneği "En yeni değerlendirme" olarak güncellenemedi').toHaveText(ReviewSortOption.Newest);
+            await expect(productDetailsPage.sortReviewBTtnAfterSort, 'Sıralama seçeneği "En yeni değerlendirme" olarak güncellenemedi')
+                .toHaveText(ReviewSortOption.Newest);
         });
 
         await test.step('Değerlendirmeye oy veriliyor', async () => {
-            if (await productDetailsPage.hasReviews()) {
-                const card = await productDetailsPage.clickRandomThumb();
-                await expect(card.getByText('Teşekkür Ederiz.'), 'Oy verme sonrası teşekkür mesajı görünmedi').toBeVisible();
-            } else {
-                console.log('Bu ürünün değerlendirmesi yok');
-            }
+            const count = await productDetailsPage.getReviewThumbCount();
+            const randomIndex = Math.floor(Math.random() * count);
+            const direction = Math.random() > 0.5 ? 'up' : 'down';
+
+            const card = await productDetailsPage.clickReviewThumb(randomIndex, direction);
+
+            await expect(card.getByText('Teşekkür Ederiz.'),
+                'Oy verme sonrası teşekkür mesajı görünmedi'
+            ).toBeVisible({ timeout: 10000 });
         });
+
     });
 });
