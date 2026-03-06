@@ -17,7 +17,7 @@ test.describe('Senaryo 1 - Ürün Arama ve Değerlendirme', () => {
 
         await test.step(`Ürün aranıyor: "${searchTerm}"`, async () => {
             await homePage.typeSearchQuery(searchTerm);
-            await expect(page).toHaveURL(searchTerm);
+            await expect(page).toHaveURL(new RegExp(searchTerm, 'i'));
         });
 
         await test.step('Arama sonuçları yüklendi', async () => {

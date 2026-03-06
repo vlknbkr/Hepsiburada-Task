@@ -16,7 +16,7 @@ test.describe('Senaryo 2 - Diğer Satıcıları Bul', () => {
 
         await test.step(`Ürün aranıyor: "${searchTerm}"`, async () => {
             await homePage.typeSearchQuery(searchTerm);
-            await expect(page).toHaveURL(searchTerm);
+            await expect(page).toHaveURL(new RegExp(searchTerm, 'i'));
         });
 
         const { productInfo, newPage } = await test.step('Rastgele ürün seçildi', async () => {
