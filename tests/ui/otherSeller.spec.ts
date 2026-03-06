@@ -4,18 +4,17 @@ import { ProductDetailPage } from '../../src/ui/pages/ProductDetailPage';
 test.describe('Senaryo 2 - Diğer Satıcıları Bul', () => {
     const searchTerm = 'iphone';
 
-    test('Ürün ara ve en ucuz satıcıya git', async ({ homePage, searchResultsPage, page }) => {
+    test('Ürün ara ve en ucuz satıcıya git', async ({ homePage, searchResultsPage, page, searchFlow }) => {
 
         await test.step('Ana sayfa açılıyor', async () => {
             await homePage.open();
         });
 
-        await test.step('Arama modalı açılıyor', async () => {
-            await homePage.openSearchModal();
+        await test.step('Ürün aranma: ', async () => {
+            await searchFlow.searchFor(searchTerm);
         });
 
-        await test.step(`Ürün aranıyor: "${searchTerm}"`, async () => {
-            await homePage.typeSearchQuery(searchTerm);
+        await test.step(`Arama sayfası doğrula"${searchTerm}"`, async () => {
             await expect(page).toHaveURL(searchTerm);
         });
 

@@ -13,7 +13,6 @@ export class ProductDetailPage extends BasePage {
     constructor(page: Page) {
         super(page);
     }
-
     // ── Ürün Bilgisi
     get productInfoSection() { return this.page.locator('.X7UOpIDPCas7K8jG8_5Y'); }
     get productTitle() { return this.productInfoSection.locator('[data-test-id="title"]'); }

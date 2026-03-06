@@ -31,38 +31,22 @@ export class HomePage extends BasePage {
         await this.page.waitForTimeout(200);
     }
 
-    async typeSearchQuery(query: string) {
-        await this.searchInput.fill(query);
+    async fillSearchInput(key: string) {
+        await this.searchInput.fill(key);
+    }
+
+    async submitInput() {
         await this.page.keyboard.press('Enter');
     }
 
 
     async clickSearchBoxToTrigger() {
-        await this.searchBoxTrigger.click();
+        await this.searchBoxTrigger.click({force: true});
     }
 
-    async openSearchModal(): Promise<boolean> {
-        console.log(`${DEBUG} openSearchModal → Arama modalı açılıyor...`);
-
-        await expect.poll(async () => {
-            await this.searchBoxTrigger.click({ force: true });
-
-            try {
-                await this.searchModalActiveContainer.waitFor({ state: 'visible', timeout: 2000 });
-                return true;
-            } catch (e) {
-                console.log(`${DEBUG} Modal henüz gelmedi, tekrar tıklanıyor...`);
-                return false;
-            }
-        }, {
-            message: 'Arama modalı 5 saniye içinde açılamadı.',
-            intervals: [1000, 2000],
-            timeout: 15000
-        }).toBeTruthy();
-
-        return true;
+    async isSearchModalActive(): Promise <boolean>{
+        return await this.searchModalActiveContainer.isVisible({timeout: 3000});
     }
-
     async handleCookieConsent() {
         await Promise.allSettled([
             this.acceptCookieConsent(this.hbConsent),
