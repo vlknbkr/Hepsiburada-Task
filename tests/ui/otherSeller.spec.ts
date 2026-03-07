@@ -4,7 +4,12 @@ import { ProductDetailPage } from '../../src/ui/pages/ProductDetailPage';
 test.describe('Senaryo 2 - Diğer Satıcıları Bul', () => {
     const searchTerm = 'iphone';
 
-    test('Ürün ara ve en ucuz satıcıya git', async ({ homePage, searchResultsPage, page, searchFlow }) => {
+    test('Ürün ara ve en ucuz satıcıya git', async ({ homePage,
+        searchResultsPage,
+        page,
+        searchFlow,
+        productDetailPage,
+        addToCartFlow }) => {
 
         await test.step('Ana sayfa açılıyor', async () => {
             await homePage.open();
@@ -15,7 +20,7 @@ test.describe('Senaryo 2 - Diğer Satıcıları Bul', () => {
         });
 
         await test.step(`Arama sayfası doğrula"${searchTerm}"`, async () => {
-            await expect(page).toHaveURL(searchTerm);
+            await expect(page).toHaveURL(new RegExp(searchTerm, 'i'));
         });
 
         const { productInfo, newPage } = await test.step('Rastgele ürün seçildi', async () => {
@@ -23,7 +28,8 @@ test.describe('Senaryo 2 - Diğer Satıcıları Bul', () => {
             return await searchResultsPage.clickRandomProduct();
         });
 
-        const productDetailsPage = new ProductDetailPage(newPage);
+        const productDetailsPage = productDetailPage(newPage);
+        const addToCartModal = addToCartFlow(newPage);
 
         await test.step('Ürün detay sayfası yüklendi', async () => {
             await productDetailsPage.waitForPageLoad();
@@ -31,7 +37,7 @@ test.describe('Senaryo 2 - Diğer Satıcıları Bul', () => {
 
         await test.step('Ürün bilgisi ve diğer satıcılar alınıyor', async () => {
             const mainProduct = await productDetailsPage.getProductInfo();
-            const otherSellers = await productDetailsPage.getOtherSellers() || [];
+            const otherSellers = await addToCartModal.getOtherSellers() || [];
 
             if (otherSellers.length > 0) {
                 const cheapest = otherSellers.reduce((min, s) =>
@@ -45,7 +51,7 @@ test.describe('Senaryo 2 - Diğer Satıcıları Bul', () => {
         });
 
         await test.step('Ürünü sepete ekle ve modalı doğrula', async () => {
-            const modalData = await productDetailsPage.addToCart();
+            const modalData = await addToCartModal.addToCart();
 
             expect(modalData.successMessage).toContain('Ürün sepetinizde');
             expect(modalData.productTitle).not.toBe('');

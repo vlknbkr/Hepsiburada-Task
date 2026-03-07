@@ -5,19 +5,18 @@ import { ReviewSortOption } from '../../src/ui/types/ReviewSortOption';
 test.describe('Senaryo 1 - Ürün Arama ve Değerlendirme', () => {
     const searchTerm = 'iphone';
 
-    test('Ürün ara, rastgele bir ürün seç, doğrula ve değerlendirmelerle etkileşime gir', async ({ homePage, searchResultsPage, page }) => {
+    test('Ürün ara, rastgele bir ürün seç, doğrula ve değerlendirmelerle etkileşime gir', async ({ homePage, searchResultsPage, page, searchFlow, productDetailPage, addToCartFlow }) => {
 
         await test.step('Ana sayfa açılıyor', async () => {
             await homePage.open();
         });
 
-        await test.step('Arama modalı açılıyor', async () => {
-            await homePage.openSearchModal();
+        await test.step('Ürün aranma: ', async () => {
+            await searchFlow.searchFor(searchTerm);
         });
 
-        await test.step(`Ürün aranıyor: "${searchTerm}"`, async () => {
-            await homePage.typeSearchQuery(searchTerm);
-            await expect(page).toHaveURL(searchTerm);
+        await test.step(`Arama sayfası doğrula"${searchTerm}"`, async () => {
+            await expect(page).toHaveURL(new RegExp(searchTerm, 'i'));
         });
 
         await test.step('Arama sonuçları yüklendi', async () => {
@@ -28,7 +27,8 @@ test.describe('Senaryo 1 - Ürün Arama ve Değerlendirme', () => {
             return await searchResultsPage.clickRandomProduct();
         });
 
-        const productDetailsPage = new ProductDetailPage(newPage);
+        const productDetailsPage = productDetailPage(newPage);
+        const addToCartModal = addToCartFlow(newPage);
 
         await test.step('Ürün detay sayfası yüklendi', async () => {
             await productDetailsPage.waitForPageLoad();
@@ -41,7 +41,7 @@ test.describe('Senaryo 1 - Ürün Arama ve Değerlendirme', () => {
         });
 
         await test.step('Değerlendirmeler sekmesine geçiliyor', async () => {
-            await productDetailsPage.goToReviews();
+            await addToCartModal.goToReviews();
         });
 
         await test.step('Değerlendirmeler sekmesinin içeriği kontrol ediliyor', async () => {
@@ -49,20 +49,21 @@ test.describe('Senaryo 1 - Ürün Arama ve Değerlendirme', () => {
         });
 
         await test.step('Değerlendirmeler "En Yeni" ye göre sıralanıyor', async () => {
-            await productDetailsPage.selectSortOption(ReviewSortOption.Newest);
+            await addToCartModal.selectSortOption(ReviewSortOption.Newest);
         });
 
         await test.step('Sıralamanın "En Yeni" olarak güncellendiği doğrulanıyor', async () => {
-            await expect(productDetailsPage.sortReviewBTtnAfterSort, 'Sıralama seçeneği "En yeni değerlendirme" olarak güncellenemedi')
+            await expect(productDetailsPage.sortReviewBtnAfterSort, 'Sıralama seçeneği "En yeni değerlendirme" olarak güncellenemedi')
                 .toHaveText(ReviewSortOption.Newest);
         });
 
         await test.step('Değerlendirmeye oy veriliyor', async () => {
-            const count = await productDetailsPage.getReviewThumbCount();
+            const count = await productDetailsPage.getReviewsWithThumbsCount();
             const randomIndex = Math.floor(Math.random() * count);
             const direction = Math.random() > 0.5 ? 'up' : 'down';
 
-            const card = await productDetailsPage.clickReviewThumb(randomIndex, direction);
+            const card = await addToCartModal.clickReviewThumb(randomIndex, direction);
+
 
             await expect(card.getByText('Teşekkür Ederiz.'),
                 'Oy verme sonrası teşekkür mesajı görünmedi'

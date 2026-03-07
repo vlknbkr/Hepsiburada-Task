@@ -13,7 +13,7 @@ export class HomePage extends BasePage {
     get searchModalActiveContainer() { return this.page.locator('.searchBarContent-Wl6hIIE3QjA9Nou6rD6j'); }
     get searchInput() { return this.page.locator('.searchBarContent-Wl6hIIE3QjA9Nou6rD6j [data-test-id="search-bar-input"]'); }
     get fcConsent() { return this.page.locator('button.fc-cta-consent'); }
-    get hbConsent() { return this.page.getByRole('button', { name: 'Kabul et' }); }
+    get hbConsent() { return this.page.getByText('Kabul Et', { exact: true }); }
 
     async open() {
         await this.navigate('');
