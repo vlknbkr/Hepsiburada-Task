@@ -105,36 +105,22 @@ export class AddToCartFlow {
         return sellers;
     }
 
-    async clickReviewThumb(index: number, type: 'up' | 'down'): Promise<Locator> {
-        const card = this.productDetailsPage.getReviewCard(index);
-        console.log("review card index " + card);
-
-        const btn = type === 'up'
-            ? this.productDetailsPage.thumpsUpBtn(index)
-            : this.productDetailsPage.thumpsDownBtn(index);
-
-        await btn.waitFor({ state: 'visible' });
-        await btn.scrollIntoViewIfNeeded();
-
-        await btn.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {
-            console.log(`${DEBUG} clickReviewThumb → Element visible olmadı, yine de deneyeceğiz.`);
-        });
+    async clickReviewThumb(index: number, type: 'up' | 'down'): Promise<void> {
+        console.log(`${DEBUG} clickReviewThumb → index: ${index}, type: ${type}`);
 
         await expect.poll(async () => {
-            try {
-                await btn.click({ force: true, timeout: 2000 });
-            } catch (e) {
-                await btn.dispatchEvent('click');
+            if (type === 'up') {
+                await this.productDetailsPage.clickThumpsUp(index);
+            } else {
+                await this.productDetailsPage.clickThumpsDown(index);
             }
 
-            return await card.getByText('Teşekkür Ederiz.').isVisible();
+            return await this.productDetailsPage.isReviewThanksMessageVisible(index);
         }, {
             message: 'Oy verme işlemi başarısız oldu (Teşekkür mesajı görülmedi)',
             intervals: [1000, 2000],
             timeout: 10000
         }).toBe(true);
-
-        return card;
     }
 
     async addToCart(): Promise<AddToCartModalData> {

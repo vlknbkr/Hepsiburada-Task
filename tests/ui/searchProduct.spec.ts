@@ -62,12 +62,10 @@ test.describe('Senaryo 1 - Ürün Arama ve Değerlendirme', () => {
             const randomIndex = Math.floor(Math.random() * count);
             const direction = Math.random() > 0.5 ? 'up' : 'down';
 
-            const card = await addToCartModal.clickReviewThumb(randomIndex, direction);
+            await addToCartModal.clickReviewThumb(randomIndex, direction);
 
-
-            await expect(card.getByText('Teşekkür Ederiz.'),
-                'Oy verme sonrası teşekkür mesajı görünmedi'
-            ).toBeVisible({ timeout: 10000 });
+            const isVisible = await productDetailsPage.isReviewThanksMessageVisible(randomIndex);
+            expect(isVisible, 'Oy verme sonrası teşekkür mesajı görünmedi').toBeTruthy();
         });
 
     });

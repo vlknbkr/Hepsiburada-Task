@@ -161,4 +161,9 @@ export class ProductDetailPage extends BasePage {
         await this.addToCartBtn.waitFor({ state: "visible" });
     }
 
+
+    async isReviewThanksMessageVisible(index: number): Promise<boolean> {
+        const card = this.getReviewCard(index);
+        return await card.getByText('Teşekkür Ederiz.').isVisible();
+    }
 }
